@@ -1,10 +1,12 @@
 import type { FastifyServerOptions } from 'fastify';
-import { ConnectionStates, createConnection } from 'mongoose';
+import { type ConnectionStates, createConnection } from 'mongoose';
 
 import { buildApp } from './app.js';
 import { createNoteModel } from './modules/notes/note.model.js';
 import { MongooseNoteRepository } from './modules/notes/note.repository.js';
 import { DefaultNoteService } from './modules/notes/note.service.js';
+
+const MONGODB_CONNECTED_READY_STATE: ConnectionStates.connected = 1;
 
 export interface CreateApplicationOptions {
   mongodbUri: string;
@@ -26,7 +28,7 @@ export async function createApplication(options: CreateApplicationOptions) {
       noteService,
       openapiEnabled: options.openapiEnabled,
       corsOrigins: options.corsOrigins,
-      isReady: () => connection.readyState === ConnectionStates.connected,
+      isReady: () => connection.readyState === MONGODB_CONNECTED_READY_STATE,
       ...(options.logger === undefined ? {} : { logger: options.logger }),
       ...(options.swaggerUiEnabled === undefined ? {} : { swaggerUiEnabled: options.swaggerUiEnabled }),
     });
