@@ -1,0 +1,17 @@
+.git
+.github
+.husky
+.idea
+.scratch
+coverage
+dist
+node_modules
+test
+**/*.test.ts
+**/*.spec.ts
+*.md
+
+# Secrets and local-only files must never enter an image layer.
+.env
+.env.*
+!.env.example
