@@ -1,5 +1,5 @@
 import type { FastifyServerOptions } from 'fastify';
-import { createConnection } from 'mongoose';
+import { ConnectionStates, createConnection } from 'mongoose';
 
 import { buildApp } from './app.js';
 import { createNoteModel } from './modules/notes/note.model.js';
@@ -26,6 +26,7 @@ export async function createApplication(options: CreateApplicationOptions) {
       noteService,
       openapiEnabled: options.openapiEnabled,
       corsOrigins: options.corsOrigins,
+      isReady: () => connection.readyState === ConnectionStates.connected,
       ...(options.logger === undefined ? {} : { logger: options.logger }),
       ...(options.swaggerUiEnabled === undefined ? {} : { swaggerUiEnabled: options.swaggerUiEnabled }),
     });

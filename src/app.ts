@@ -6,6 +6,7 @@ import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import fastify, { type FastifyServerOptions } from 'fastify';
 
 import { registerProblemDetailsHandlers } from './errors/problem-details.js';
+import { healthRoutes } from './modules/health/health.routes.js';
 import { notesRoutes } from './modules/notes/note.routes.js';
 import type { NoteService } from './modules/notes/note.service.js';
 
@@ -15,6 +16,7 @@ export interface BuildAppOptions {
   openapiEnabled?: boolean;
   swaggerUiEnabled?: boolean;
   corsOrigins?: string[];
+  isReady?: () => boolean;
 }
 
 export function buildApp(options: BuildAppOptions) {
@@ -35,7 +37,7 @@ export function buildApp(options: BuildAppOptions) {
     app.register(swagger, {
       openapi: {
         info: {
-          title: 'Fastify MongoDB service',
+          title: 'StubHub tickets service',
           version: '0.1.0',
         },
       },
@@ -45,6 +47,11 @@ export function buildApp(options: BuildAppOptions) {
       app.register(swaggerUi, { routePrefix: '/documentation' });
     }
   }
+
+  app.register(healthRoutes, {
+    prefix: '/health',
+    isReady: options.isReady ?? (() => true),
+  });
 
   app.register(notesRoutes, {
     prefix: '/v1/notes',

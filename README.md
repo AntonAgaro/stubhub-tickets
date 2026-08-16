@@ -1,8 +1,10 @@
-# Fastify MongoDB microservice template
+# StubHub tickets service
 
-A personal golden repository for one independently deployable HTTP/JSON service. It uses strict TypeScript, Fastify, TypeBox, Mongoose, Vitest, and pnpm, and includes a removable notes module that demonstrates the intended architecture.
+The independently deployable tickets service for the StubHub clone study project. It currently retains the template's removable notes module and contains no StubHub business behavior.
 
 The repository produces a non-root OCI image suitable for Docker or an external orchestrator. It intentionally contains no Kubernetes manifests, CI pipeline, broker, telemetry backend, or repository-owned MongoDB stack.
+
+Kubernetes manifests and developer orchestration live in `AntonAgaro/stubhub-clone`. This repository adds only service identity, health endpoints, tests, and its independent CI/image release workflow to the shared Fastify template baseline.
 
 ## Requirements
 
@@ -76,6 +78,15 @@ The removable example is mounted under `/v1/notes`:
 | `DELETE` | `/v1/notes/:id`                | Deletes a note and returns 204                   |
 
 Errors use RFC 9457 Problem Details. Invalid input returns 400, missing notes return 404, and duplicate slugs return 409. MongoDB identifiers and Mongoose metadata never leak through the response schema.
+
+## Health API
+
+| Method | Path            | Result                                         |
+| ------ | --------------- | ---------------------------------------------- |
+| `GET`  | `/health/live`  | 200 while the Node process can serve HTTP      |
+| `GET`  | `/health/ready` | 200 while Mongoose is connected; otherwise 503 |
+
+Health responses contain only a fixed status. NATS is not checked because this service does not connect to NATS yet.
 
 ## Commands
 
