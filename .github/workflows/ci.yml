@@ -27,5 +27,7 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Check source and tests
         run: pnpm check
+        env:
+          TESTCONTAINERS_HOST_OVERRIDE: 127.0.0.1
       - name: Build production output
         run: pnpm build
